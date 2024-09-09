@@ -1,46 +1,65 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native';
-import { ModalPassword } from './src/components/modal/index.js';
+import { ModalPassword } from './src/components/modal/index.js'; // Importa o componente ModalPassword do diretório correto
 
-
+// Modal é o Popups
+// Define um conjunto de caracteres que serão usados para gerar a senha
 const charset = "abcdefghijklmnopqrstuvwxyz!#$&%0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export default function App() {
+  // Estado para armazenar a senha gerada
   const [senhaGerada, setSenhaGerada] = useState("");
-  const [modalVisible, setModalVisible] = useState("");
+  
+  // Estado para controlar a visibilidade do modal
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // Função para gerar uma senha aleatória
   function gerarSenha() {
     let senha = "";
     const n = charset.length;
+    // Gera uma senha de 10 caracteres
     for (let i = 0; i < 10; i++) {
       senha += charset.charAt(Math.floor(Math.random() * n));
     }
+    // Atualiza o estado com a senha gerada e mostra o modal
     setSenhaGerada(senha);
     setModalVisible(true);
-
   }
 
   return (
     <View style={styles.container}>
+      {/* Exibe a imagem do logo */}
       <Image
         source={require("./src/img/logolock.png")}
         style={styles.logo}
       />
 
+      {/* Exibe o título do aplicativo */}
       <Text style={styles.title}>LockGen</Text>
 
+      {/* Botão para gerar a senha */}
       <TouchableOpacity style={styles.button} onPress={gerarSenha}>
         <Text style={styles.textbutton}>Gerar Senhas</Text>
       </TouchableOpacity>
 
-<Modal visible={modalVisible} animationType='fade' transparent={true}>
-<ModalPassword/>
-</Modal>
-
-      <Text style={styles.genText}>{senhaGerada}</Text>
+      {/* Modal que mostra a senha gerada */}
+      <Modal 
+        visible={modalVisible} 
+        animationType='fade' 
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)} // Fecha o modal ao pressionar o botão de voltar em Android
+      >
+        {/* Componente ModalPassword exibe a senha e fornece uma função para fechar o modal */}
+        <ModalPassword 
+          senha={senhaGerada} 
+          fecharModal={() => setModalVisible(false)} 
+        />
+      </Modal>
     </View>
   );
 }
 
+// Estilos para o aplicativo
 const styles = StyleSheet.create({
   container: {
     flex: 1,
